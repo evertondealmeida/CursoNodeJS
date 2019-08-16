@@ -1,23 +1,30 @@
-//Permitir que a aplicação rode sozinha: npm install nodemon -g
-
+//Permitir que a aplicação rode template: npm install --save express-handlebars
+//Permitir enviar via POST: npm install --save body-parser
 const express = require("express");//npm install express
 const app = express();//const para não sobre escrever
+const handlebars = require('express-handlebars');
+const bodyParser = require('body-parser');
 
-app.get("/", function(req,res){ //Define uma rota
-    res.sendFile(__dirname+"/html/index.html"); //__dirname pega o diretorio raiz da aplicação
-});
 
-app.get("/sobre", function(req,res){ //Define uma rota
-    res.send("Minha pagina sobre."); //Send para enviar uma resposta
-});
 
-app.get("/ola/:nome/:cargo", function(req,res){ //Define uma rota
-    res.send(req.params); //Recebe todos os dados de uma requisição
-});
+//Config
+    //Template Engine
+    app.engine('handlebars', handlebars({defaultLayout: 'main'}));
+    app.set('view engine', 'handlebars');
+    //Body Parser
+    app.use(bodyParser.urlencoded({extended:false}));
+    app.use(bodyParser.json());
+    
 
-app.get("/ola2/:nome/:cargo", function(req,res){ //Define uma rota
-    res.send("Ola "+req.params.nome+", seu carogo eh: "+req.params.cargo); //Recebe o parametro de uma requisição
-});
-app.listen(3000,function(){
-    console.log("Servidor rodando na porta 3000.")
-});//Sempre a ultima linha do codigo
+//rotas 
+    app.get('/cad', function(req,res){
+        res.render('formulario');
+    });
+
+    app.post('/add', function(req,res){
+        res.send("Texto "+req.body.titulo+" Conteudo: "+req.body.conteudo);
+    });
+
+    app.listen(3000,function(){
+        console.log("Servidor rodando na porta 3000.")
+    });//Sempre a ultima linha do codigo
